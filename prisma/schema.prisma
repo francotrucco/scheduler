@@ -10,8 +10,29 @@ generator client {
     provider = "prisma-client-js"
 }
 
-model Example {
+model Appointments {
     id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    doctorId String
+    patientId String
+    appointmentTime DateTime
+
+    @@index([doctorId, patientId])  
+}
+
+model DoctorHours {
+  doctorId String @id @default(cuid())
+  startTime DateTime
+  endTime DateTime
+
+  @@index([doctorId])
+}
+
+model UserDetails {
+  id String @id @default(cuid())
+  name String
+  phone String
+  birthdate DateTime
+  role String
+  dni Int
+  email String @db.VarChar(60)
 }
