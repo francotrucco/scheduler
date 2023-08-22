@@ -1,10 +1,11 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { AppProps } from "next/app";
 import { api } from "~/utils/api";
+import { esES, frFR } from "@clerk/localizations";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ClerkProvider {...pageProps}>
+    <ClerkProvider localization={esES} {...pageProps}>
       <Component {...pageProps} />
     </ClerkProvider>
   );
