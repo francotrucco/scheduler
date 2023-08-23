@@ -27,12 +27,18 @@ model DoctorHours {
   @@index([doctorId])
 }
 
-model UserDetails {
-  id String @id @default(cuid())
-  name String
-  phone String
-  birthdate DateTime
-  role String
-  dni Int
-  email String @db.VarChar(60)
+model User {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  password String?
+  phone   String? 
+  name     String
+  role     Role
+  googleId String?
+  facebookId String?
+}
+
+enum Role {
+  DOCTOR
+  PATIENT
 }
