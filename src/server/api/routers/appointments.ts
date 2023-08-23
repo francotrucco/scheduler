@@ -6,26 +6,26 @@ import {
 import { z } from "zod";
 import type { Prisma } from "@prisma/client";
 
-const appointmentIdInputSchema = z.object({ appointmentId: z.string() });
-const appointmentInputSchema = z.object({
-  appointmentId: z.string(),
+const appointmentIdValidationSchema = z.object({ id: z.string() });
+const appointmentValidationSchema = z.object({
+  id: z.string(),
   appointmentTime: z.date(),
   patientId: z.string(),
   doctorId: z.string(),
 });
 
 export const appointmentsRouter = createTRPCRouter({
-  get: publicProcedure.input(appointmentIdInputSchema).query((opts) => {
+  get: publicProcedure.input(appointmentIdValidationSchema).query((opts) => {
     const { ctx, input } = opts;
 
     return ctx.prisma.appointments.findUnique({
-      where: { id: input.appointmentId },
+      where: { id: input.id },
     });
   }),
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.appointments.findMany();
   }),
-  add: privateProcedure.input(appointmentInputSchema).mutation((opts) => {
+  add: privateProcedure.input(appointmentValidationSchema).mutation((opts) => {
     const appointment: Prisma.AppointmentsCreateArgs = {
       data: { ...opts.input },
     };
@@ -33,11 +33,11 @@ export const appointmentsRouter = createTRPCRouter({
     return opts.ctx.prisma.appointments.create(appointment);
   }),
   update: privateProcedure
-    .input(appointmentInputSchema)
+    .input(appointmentValidationSchema)
     .mutation(({ ctx, input }) => {
       const updatedAppointment: Prisma.AppointmentsUpdateArgs = {
         where: {
-          id: input.appointmentId,
+          id: input.id,
         },
         data: {
           ...input,
@@ -47,10 +47,10 @@ export const appointmentsRouter = createTRPCRouter({
       return ctx.prisma.appointments.update(updatedAppointment);
     }),
   delete: privateProcedure
-    .input(appointmentIdInputSchema)
+    .input(appointmentIdValidationSchema)
     .mutation(({ input, ctx }) => {
       return ctx.prisma.appointments.delete({
-        where: { id: input.appointmentId },
+        where: { id: input.id },
       });
     }),
 });
