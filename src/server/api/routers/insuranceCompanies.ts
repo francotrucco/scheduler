@@ -6,35 +6,39 @@ import {
 import { z } from "zod";
 import type { Prisma } from "@prisma/client";
 
-const insuranceCompanyIdSchema = z.object({
+const insuranceCompanyIdValidationSchema = z.object({
   id: z.string(),
 });
 
-const insuranceCompanySchema = z.object({
+const insuranceCompanyValidationSchema = z.object({
   id: z.string(),
   name: z.string(),
 });
 
 export const insuranceCompaniesRouter = createTRPCRouter({
-  get: publicProcedure.input(insuranceCompanyIdSchema).query((opts) => {
-    const { ctx, input } = opts;
+  get: publicProcedure
+    .input(insuranceCompanyIdValidationSchema)
+    .query((opts) => {
+      const { ctx, input } = opts;
 
-    return ctx.prisma.insuranceCompany.findUnique({
-      where: { id: input.id },
-    });
-  }),
+      return ctx.prisma.insuranceCompany.findUnique({
+        where: { id: input.id },
+      });
+    }),
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.insuranceCompany.findMany();
   }),
-  add: privateProcedure.input(insuranceCompanySchema).mutation((opts) => {
-    const insuranceCompany: Prisma.InsuranceCompanyCreateArgs = {
-      data: { ...opts.input },
-    };
+  add: privateProcedure
+    .input(insuranceCompanyValidationSchema)
+    .mutation((opts) => {
+      const insuranceCompany: Prisma.InsuranceCompanyCreateArgs = {
+        data: { ...opts.input },
+      };
 
-    return opts.ctx.prisma.insuranceCompany.create(insuranceCompany);
-  }),
+      return opts.ctx.prisma.insuranceCompany.create(insuranceCompany);
+    }),
   update: privateProcedure
-    .input(insuranceCompanySchema)
+    .input(insuranceCompanyValidationSchema)
     .mutation(({ ctx, input }) => {
       const updatedInsuranceCompany: Prisma.InsuranceCompanyUpdateArgs = {
         where: {
@@ -50,7 +54,7 @@ export const insuranceCompaniesRouter = createTRPCRouter({
     }),
 
   delete: privateProcedure
-    .input(insuranceCompanyIdSchema)
+    .input(insuranceCompanyIdValidationSchema)
     .mutation(({ input, ctx }) => {
       return ctx.prisma.insuranceCompany.delete({
         where: { id: input.id },
