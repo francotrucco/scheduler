@@ -1,7 +1,7 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-export const doctorHoursRouter = createTRPCRouter({
+export const workingHoursRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.doctorHours.findMany();
+    return ctx.prisma.workingHours.findMany();
   }),
 });

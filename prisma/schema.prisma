@@ -10,7 +10,7 @@ generator client {
     provider = "prisma-client-js"
 }
 
-model Appointments {
+model Appointment {
     id        String   @id @default(cuid())
     doctorId String
     patientId String
@@ -19,7 +19,7 @@ model Appointments {
     @@index([doctorId, patientId])  
 }
 
-model DoctorHours {
+model WorkingHours {
   doctorId String @id @default(cuid())
   startTime DateTime
   endTime DateTime
@@ -58,12 +58,13 @@ model InsuranceCompanyPlan {
   @@index([insuranceCompanyId])
 }
 
-model MedicalServices {
+model MedicalService {
   id String @id @default(cuid())
   name String
+	@@map("MedicalServices")
 }
 
-model DoctorsMedicalServices {
+model DoctorsMedicalService {
   id String @id @default(cuid())
   doctorId String
   medicalServiceId String

@@ -15,27 +15,29 @@ const appointmentValidationSchema = z.object({
 });
 
 export const appointmentsRouter = createTRPCRouter({
-  get: publicProcedure.input(appointmentIdValidationSchema).query((opts) => {
-    const { ctx, input } = opts;
-
-    return ctx.prisma.appointments.findUnique({
-      where: { id: input.id },
-    });
-  }),
+  get: publicProcedure
+    .input(appointmentIdValidationSchema)
+    .query(({ ctx, input }) => {
+      return ctx.prisma.appointment.findUnique({
+        where: { id: input.id },
+      });
+    }),
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.appointments.findMany();
+    return ctx.prisma.appointment.findMany();
   }),
-  add: privateProcedure.input(appointmentValidationSchema).mutation((opts) => {
-    const appointment: Prisma.AppointmentsCreateArgs = {
-      data: { ...opts.input },
-    };
+  add: privateProcedure
+    .input(appointmentValidationSchema)
+    .mutation(({ ctx, input }) => {
+      const appointment: Prisma.AppointmentCreateArgs = {
+        data: { ...input },
+      };
 
-    return opts.ctx.prisma.appointments.create(appointment);
-  }),
+      return ctx.prisma.appointment.create(appointment);
+    }),
   update: privateProcedure
     .input(appointmentValidationSchema)
     .mutation(({ ctx, input }) => {
-      const updatedAppointment: Prisma.AppointmentsUpdateArgs = {
+      const updatedAppointment: Prisma.AppointmentUpdateArgs = {
         where: {
           id: input.id,
         },
@@ -44,12 +46,12 @@ export const appointmentsRouter = createTRPCRouter({
         },
       };
 
-      return ctx.prisma.appointments.update(updatedAppointment);
+      return ctx.prisma.appointment.update(updatedAppointment);
     }),
   delete: privateProcedure
     .input(appointmentIdValidationSchema)
-    .mutation(({ input, ctx }) => {
-      return ctx.prisma.appointments.delete({
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.appointment.delete({
         where: { id: input.id },
       });
     }),
