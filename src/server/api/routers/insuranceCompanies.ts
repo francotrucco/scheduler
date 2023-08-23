@@ -6,6 +6,12 @@ import {
 import { z } from "zod";
 import type { Prisma } from "@prisma/client";
 
+const insuranceCompanyPlanValidationSchema = z.object({
+  id: z.string().optional(), // optional because it might not be defined when creating a new plan
+  name: z.string(),
+  insuranceCompanyId: z.string().optional(), // optional because it will be auto-filled when the insurance company is created
+});
+
 const insuranceCompanyIdValidationSchema = z.object({
   id: z.string(),
 });
@@ -13,6 +19,7 @@ const insuranceCompanyIdValidationSchema = z.object({
 const insuranceCompanyValidationSchema = z.object({
   id: z.string(),
   name: z.string(),
+  plans: z.array(insuranceCompanyPlanValidationSchema).optional(), // optional because it might not always be provided
 });
 
 export const insuranceCompaniesRouter = createTRPCRouter({
@@ -32,9 +39,13 @@ export const insuranceCompaniesRouter = createTRPCRouter({
     .input(insuranceCompanyValidationSchema)
     .mutation((opts) => {
       const insuranceCompany: Prisma.InsuranceCompanyCreateArgs = {
-        data: { ...opts.input },
+        data: {
+          ...opts.input,
+          plans: {
+            create: opts.input.plans ?? [], // creating nested insurance plans if provided
+          },
+        },
       };
-
       return opts.ctx.prisma.insuranceCompany.create(insuranceCompany);
     }),
   update: privateProcedure
@@ -44,12 +55,19 @@ export const insuranceCompaniesRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
-
         data: {
           ...input,
+          plans: input.plans
+            ? {
+                upsert: input.plans.map((plan) => ({
+                  where: { id: plan.id },
+                  update: plan,
+                  create: plan,
+                })),
+              }
+            : undefined,
         },
       };
-
       return ctx.prisma.insuranceCompany.update(updatedInsuranceCompany);
     }),
 
