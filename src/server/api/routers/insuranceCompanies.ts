@@ -25,9 +25,7 @@ const insuranceCompanyValidationSchema = z.object({
 export const insuranceCompaniesRouter = createTRPCRouter({
   get: publicProcedure
     .input(insuranceCompanyIdValidationSchema)
-    .query((opts) => {
-      const { ctx, input } = opts;
-
+    .query(({ ctx, input }) => {
       return ctx.prisma.insuranceCompany.findUnique({
         where: { id: input.id },
       });
@@ -37,16 +35,16 @@ export const insuranceCompaniesRouter = createTRPCRouter({
   }),
   add: privateProcedure
     .input(insuranceCompanyValidationSchema)
-    .mutation((opts) => {
+    .mutation(({ ctx, input }) => {
       const insuranceCompany: Prisma.InsuranceCompanyCreateArgs = {
         data: {
-          ...opts.input,
+          ...input,
           plans: {
-            create: opts.input.plans ?? [], // creating nested insurance plans if provided
+            create: input.plans ?? [], // creating nested insurance plans if provided
           },
         },
       };
-      return opts.ctx.prisma.insuranceCompany.create(insuranceCompany);
+      return ctx.prisma.insuranceCompany.create(insuranceCompany);
     }),
   update: privateProcedure
     .input(insuranceCompanyValidationSchema)
