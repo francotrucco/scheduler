@@ -42,3 +42,29 @@ enum Role {
   DOCTOR
   PATIENT
 }
+
+model InsuranceCompany {
+  id String @id @default(cuid())
+  name String
+  plans InsuranceCompanyPlan[]
+}
+
+model InsuranceCompanyPlan {
+  id String @id @default(cuid())
+  name String
+  insuranceCompany InsuranceCompany? @relation(fields: [insuranceCompanyId], references: [id])
+  insuranceCompanyId String?
+
+  @@index([insuranceCompanyId])
+}
+
+model MedicalServices {
+  id String @id @default(cuid())
+  name String
+}
+
+model DoctorsMedicalServices {
+  id String @id @default(cuid())
+  doctorId String
+  medicalServiceId String
+}
