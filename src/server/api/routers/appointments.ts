@@ -7,7 +7,7 @@ import { z } from "zod";
 import type { Prisma } from "@prisma/client";
 
 const appointmentIdValidationSchema = z.object({ id: z.string() });
-const appointmentValidationSchema = z.object({
+export const appointmentValidationSchema = z.object({
   id: z.string(),
   appointmentTime: z.date(),
   patientId: z.string(),
@@ -17,14 +17,12 @@ const appointmentValidationSchema = z.object({
 export const appointmentsRouter = createTRPCRouter({
   get: publicProcedure
     .input(appointmentIdValidationSchema)
-    .query(({ ctx, input }) => {
-      return ctx.prisma.appointment.findUnique({
+    .query(({ ctx, input }) =>
+      ctx.prisma.appointment.findUnique({
         where: { id: input.id },
-      });
-    }),
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.appointment.findMany();
-  }),
+      })
+    ),
+  getAll: publicProcedure.query(({ ctx }) => ctx.prisma.appointment.findMany()),
   add: privateProcedure
     .input(appointmentValidationSchema)
     .mutation(({ ctx, input }) => {
@@ -50,9 +48,9 @@ export const appointmentsRouter = createTRPCRouter({
     }),
   delete: privateProcedure
     .input(appointmentIdValidationSchema)
-    .mutation(({ ctx, input }) => {
-      return ctx.prisma.appointment.delete({
+    .mutation(({ ctx, input }) =>
+      ctx.prisma.appointment.delete({
         where: { id: input.id },
-      });
-    }),
+      })
+    ),
 });
