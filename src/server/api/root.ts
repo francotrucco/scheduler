@@ -1,7 +1,6 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { appointmentsRouter } from "./routers/appointments";
 import { workingHoursRouter } from "./routers/workingHours";
-import { doctorHoursRouter } from "./routers/doctorHours";
 import { insuranceCompaniesRouter } from "./routers/insuranceCompanies";
 
 /**
@@ -12,7 +11,6 @@ import { insuranceCompaniesRouter } from "./routers/insuranceCompanies";
 export const appRouter = createTRPCRouter({
   appointments: appointmentsRouter,
   workingHours: workingHoursRouter,
-  doctorHours: doctorHoursRouter,
   insuranceCompanies: insuranceCompaniesRouter,
 });
 
