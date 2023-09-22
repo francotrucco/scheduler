@@ -24,6 +24,7 @@ export const createTRPCContext = (_opts: CreateNextContextOptions) => {
   const auth = getAuth(req);
 
   return {
+    req,
     prisma,
     auth,
   };
