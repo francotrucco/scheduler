@@ -10,16 +10,19 @@ generator client {
     provider = "prisma-client-js"
 }
 
-model Appointments {
+model Appointment {
     id        String   @id @default(cuid())
     doctorId String
     patientId String
     appointmentTime DateTime
+    doctor  User?    @relation(name: "doctor", fields: [doctorId], references: [id])
+    patient User?    @relation(name: "patient", fields: [patientId], references: [id])
 
-    @@index([doctorId, patientId])  
+    @@index([doctorId])  
+    @@index([patientId])
 }
 
-model DoctorHours {
+model WorkingHours {
   doctorId String @id @default(cuid())
   startTime DateTime
   endTime DateTime
@@ -28,7 +31,7 @@ model DoctorHours {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
+  id       String       @id @default(cuid())
   email    String    @unique
   password String?
   phone   String? 
@@ -36,6 +39,8 @@ model User {
   role     Role
   googleId String?
   facebookId String?
+  appointmentsAsDoctor Appointment[] @relation(name: "doctor")
+  appointmentsAsPatient Appointment[] @relation(name: "patient")
 }
 
 enum Role {
@@ -58,12 +63,13 @@ model InsuranceCompanyPlan {
   @@index([insuranceCompanyId])
 }
 
-model MedicalServices {
+model MedicalService {
   id String @id @default(cuid())
   name String
+	@@map("MedicalServices")
 }
 
-model DoctorsMedicalServices {
+model DoctorsMedicalService {
   id String @id @default(cuid())
   doctorId String
   medicalServiceId String
