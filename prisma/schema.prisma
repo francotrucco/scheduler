@@ -15,8 +15,11 @@ model Appointment {
     doctorId String
     patientId String
     appointmentTime DateTime
+    doctor  User?    @relation(name: "doctor", fields: [doctorId], references: [id])
+    patient User?    @relation(name: "patient", fields: [patientId], references: [id])
 
-    @@index([doctorId, patientId])  
+    @@index([doctorId])  
+    @@index([patientId])
 }
 
 model WorkingHours {
@@ -28,7 +31,7 @@ model WorkingHours {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
+  id       String       @id @default(cuid())
   email    String    @unique
   password String?
   phone   String? 
@@ -36,6 +39,8 @@ model User {
   role     Role
   googleId String?
   facebookId String?
+  appointmentsAsDoctor Appointment[] @relation(name: "doctor")
+  appointmentsAsPatient Appointment[] @relation(name: "patient")
 }
 
 enum Role {
