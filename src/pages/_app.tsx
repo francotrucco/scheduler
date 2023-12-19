@@ -3,6 +3,8 @@ import type { AppProps } from "next/app";
 import { api } from "~/utils/api";
 import { esES } from "@clerk/localizations";
 
+import "../styles/globals.css";
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ClerkProvider localization={esES} {...pageProps}>
